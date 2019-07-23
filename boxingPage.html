@@ -24,22 +24,25 @@
             y2 : null
         }; 
         let alreadyRect = false;
+        let startP = {
+            x : null,
+            y : null,
+            action : null
+        };
+        let nowDrawing = false;
+        let nowResizing = false;
+        let nowMoving = false;
+        function ptInRect(p, r) {
+            return (p.x >= r.x1 &&
+                    p.x <= r.x2 &&
+                    p.y >= r.y1 &&
+                    p.y <= r.y2);
+        }
         function getOffsetX(){
             return canvas.getBoundingClientRect().left + window.scrollX;
         }
         function getOffsetY() {
             return canvas.getBoundingClientRect().top + window.scrollY;
-        }
-        function ptInRect(p, r) {
-            return (p.x >= r.left &&
-                    p.x <= r.right &&
-                    p.y >= r.top &&
-                    p.y <= r.bottom);
-            }
-
-        function ptInRightCorner(p, r) {
-            var d = Math.hypot(p.x - r.right, p.y - r.bottom);
-            return d < Math.min((r.right - r.left) / 3, (r.bottom - r.top) / 3, 10);
         }
         /*function pageToRelative(pageX, pageY) {
             var x = (pageX - getOffsetX()) / canvas.width;
@@ -58,54 +61,155 @@
             var y = rect.y1 - getOffsetY();
             var w = rect.x2 - rect.x1;//width
             var h = rect.y2 - rect.y1;//height
-        
-            console.log(getOffsetX(),getOffsetY(),x, y,w,h);
+            ctx.clearRect(0,0,canvas.width,canvas.height);
             ctx.strokeRect(x, y, w, h);
         }
-        function coordinate1(event){
+        function mouseMove(event){
+            if(nowDrawing){
+                let tempP = {
+                    x : event.x,
+                    y : event.y
+                };
+                let tempRect = {
+                    x1 : rectCoordinate.x1,
+                    y1 : rectCoordinate.y1,
+                    x2 : tempP.x,
+                    y2 : tempP.y
+                };
+                drawRect(tempRect);
+            }else if(nowResizing){
+                let tempP = {
+                    x : event.x,
+                    y : event.y
+                };
+                let tempRect = {
+                    x1 : rectCoordinate.x1,
+                    y1 : rectCoordinate.y1,
+                    x2 : tempP.x,
+                    y2 : tempP.y
+                };
+                drawRect(tempRect);
+            }else if(nowMoving){
+                let tempP = {
+                    x : event.x,
+                    y : event.y
+                };
+                let deltaP = {
+                    x : startP.x - tempP.x,
+                    y : startP.y - tempP.y
+                }
+                let tempRect = {
+                    x1 : rectCoordinate.x1 - deltaP.x,
+                    y1 : rectCoordinate.y1 - deltaP.y,
+                    x2 : rectCoordinate.x2 - deltaP.x,
+                    y2 : rectCoordinate.y2 - deltaP.y
+                };
+                drawRect(tempRect);
+            }
+        }
+        function mouseDown(event){
             event.preventDefault();
             if(event.which === 1){
                 if(alreadyRect === false){
+                    nowDrawing = true;
                     rectCoordinate.x1 = event.x;
                     rectCoordinate.y1 = event.y;
-                    console.log(rectCoordinate);
-                }else{//네모움직이기
-                    
-                    // let distance = Math.hypot(event.x - rectCoordinate.x2, event.y - rectCoordinate.y2);
-                    // if(distance < Math.min(canvas.width /3, canvas.height / 3, 10)){
-                    //     console.log("resize");
-                    // }else{
-
-                    // }
+                }else{//네모움직이기 + resize
+                    let tempP = {};
+                    tempP.x = event.x;
+                    tempP.y = event.y;
+                    let distance = Math.hypot(tempP.x - rectCoordinate.x2, tempP.y - rectCoordinate.y2);
+                    if(distance < Math.min(canvas.width /3, canvas.height / 3, 10)){
+                        console.log("resize");
+                        nowResizing = true;
+                        startP.x = tempP.x;
+                        startP.y = tempP.y;
+                        startP.action = "resizing";
+                    }else{
+                        if(ptInRect(tempP, rectCoordinate)){
+                            console.log("move");
+                            nowMoving = true;
+                            startP.x = tempP.x;
+                            startP.y = tempP.y;
+                            startP.action = "moving";
+                        }
+                    }
                 }
             }
             
         }
-        function coordinate2(event){
+        function mouseUp(event){
             event.preventDefault();
             if(event.which === 1){
                 if(alreadyRect===false){
-                    console.log(event);
                     rectCoordinate.x2 = event.x;
                     rectCoordinate.y2 = event.y;
-                    console.log(rectCoordinate);
                     drawRect(rectCoordinate);
                     alreadyRect = true;
+                    if(rectCoordinate.x1 >= rectCoordinate.x2 || rectCoordinate.y1 >= rectCoordinate.y2){
+                        window.alert("우측 상단에서 좌측 하단으로 그려주세요");
+                        cancle();
+                        alreadyRect = false;
+                    }
+                    nowDrawing = false;
+                }else{
+                    if(startP.action === "resizing"){
+                        let endP = {
+                            x : event.x,
+                            y : event.y
+                        }
+                        let delta = {
+                            x : startP.x - endP.x,
+                            y : startP.y - endP.y
+                        }
+                        let tempX2 = {
+                            x : rectCoordinate.x2 - delta.x,
+                            y : rectCoordinate.y2 - delta.y
+                        }
+                        if(rectCoordinate.x1 >= tempX2.x || rectCoordinate.y1 >= tempX2.y){
+                            window.alert("우측 상단에서 좌측 하단으로 그려주세요");
+                            drawRect(rectCoordinate);
+                            nowResizing = false;
+                        }else{
+                            rectCoordinate.x2 -= delta.x;
+                            rectCoordinate.y2 -= delta.y;
+                            drawRect(rectCoordinate);  
+                            nowResizing = false;
+                        }
+                    }else if(startP.action === "moving"){
+                        let endP = {
+                            x : event.x,
+                            y : event.y
+                        }
+                        let delta = {
+                            x : startP.x - endP.x,
+                            y : startP.y - endP.y
+                        }
+                        rectCoordinate.x1 -= delta.x;
+                        rectCoordinate.y1 -= delta.y;
+                        rectCoordinate.x2 -= delta.x;
+                        rectCoordinate.y2 -= delta.y;
+                        drawRect(rectCoordinate);
+                        nowMoving = false;
+                    }
                 }
             }
         }
         function cancle(){//우클릭시 선택 취소
             event.preventDefault();
             alreadyRect = false;
+            startP.x = 0;
+            startP.y = 0;
+            nowDrawing, nowMoving, nowResizing = false;
             rectCoordinate.x1=null;
             rectCoordinate.y1=null;
             rectCoordinate.x2=null;
             rectCoordinate.y2=null;
             ctx.clearRect(0,0,canvas.width,canvas.height);
         }
-        console.log(rectCoordinate.x1);
-        canvas.addEventListener("mousedown", coordinate1);
-        canvas.addEventListener("mouseup", coordinate2);
+        canvas.addEventListener("mousedown", mouseDown);
+        canvas.addEventListener("mouseup", mouseUp);
         canvas.addEventListener("contextmenu", cancle);
+        canvas.addEventListener("mousemove",mouseMove);
     </script>
 </html>
