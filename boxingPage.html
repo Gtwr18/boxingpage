@@ -1,0 +1,111 @@
+<html>
+    <head>
+        <meta charset="UTF-8"></meta>
+        <title>offset시험 + 좌표 시험</title>
+    </head>
+    <body>
+        <h1>offset시험 + 좌표 시험</h1>
+        <div>
+            <canvas class="canvas"></canvas>
+        </div>
+    </body>
+    <style type="text/css">
+        .canvas{
+            border-style : solid;
+        }
+    </style>
+    <script>
+        const canvas = document.querySelector("canvas");
+        const ctx = canvas.getContext("2d");
+        const rectCoordinate = {
+            x1 : null,
+            y1 : null,
+            x2 : null,
+            y2 : null
+        }; 
+        let alreadyRect = false;
+        function getOffsetX(){
+            return canvas.getBoundingClientRect().left + window.scrollX;
+        }
+        function getOffsetY() {
+            return canvas.getBoundingClientRect().top + window.scrollY;
+        }
+        function ptInRect(p, r) {
+            return (p.x >= r.left &&
+                    p.x <= r.right &&
+                    p.y >= r.top &&
+                    p.y <= r.bottom);
+            }
+
+        function ptInRightCorner(p, r) {
+            var d = Math.hypot(p.x - r.right, p.y - r.bottom);
+            return d < Math.min((r.right - r.left) / 3, (r.bottom - r.top) / 3, 10);
+        }
+        /*function pageToRelative(pageX, pageY) {
+            var x = (pageX - getOffsetX()) / canvas.width;
+            var y = (pageY - getOffsetY()) / canvas.height;
+            return {x: x, y: y};
+        }
+
+        function relativeToPage(relX, relY) {
+            var x = (relX * canvas.width) + getOffsetX();
+            var y = (relY * canvas.height) + getOffsetY();
+            return {x: x, y: y};
+        }*/
+        function drawRect(rect) {
+            // Draw rectangle
+            var x = rect.x1 - getOffsetX();//in canvas coordinate system
+            var y = rect.y1 - getOffsetY();
+            var w = rect.x2 - rect.x1;//width
+            var h = rect.y2 - rect.y1;//height
+        
+            console.log(getOffsetX(),getOffsetY(),x, y,w,h);
+            ctx.strokeRect(x, y, w, h);
+        }
+        function coordinate1(event){
+            event.preventDefault();
+            if(event.which === 1){
+                if(alreadyRect === false){
+                    rectCoordinate.x1 = event.x;
+                    rectCoordinate.y1 = event.y;
+                    console.log(rectCoordinate);
+                }else{//네모움직이기
+                    
+                    // let distance = Math.hypot(event.x - rectCoordinate.x2, event.y - rectCoordinate.y2);
+                    // if(distance < Math.min(canvas.width /3, canvas.height / 3, 10)){
+                    //     console.log("resize");
+                    // }else{
+
+                    // }
+                }
+            }
+            
+        }
+        function coordinate2(event){
+            event.preventDefault();
+            if(event.which === 1){
+                if(alreadyRect===false){
+                    console.log(event);
+                    rectCoordinate.x2 = event.x;
+                    rectCoordinate.y2 = event.y;
+                    console.log(rectCoordinate);
+                    drawRect(rectCoordinate);
+                    alreadyRect = true;
+                }
+            }
+        }
+        function cancle(){//우클릭시 선택 취소
+            event.preventDefault();
+            alreadyRect = false;
+            rectCoordinate.x1=null;
+            rectCoordinate.y1=null;
+            rectCoordinate.x2=null;
+            rectCoordinate.y2=null;
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+        }
+        console.log(rectCoordinate.x1);
+        canvas.addEventListener("mousedown", coordinate1);
+        canvas.addEventListener("mouseup", coordinate2);
+        canvas.addEventListener("contextmenu", cancle);
+    </script>
+</html>
