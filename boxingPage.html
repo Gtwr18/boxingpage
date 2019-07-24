@@ -5,9 +5,10 @@
     </head>
     <body>
         <h1>offset시험 + 좌표 시험</h1>
-        <div>
+        <div class = "wrapper">
             <canvas class="canvas"></canvas>
         </div>
+        <button id = "submit" style="border-style : solid">제출</button>
     </body>
     <style type="text/css">
         .canvas{
@@ -17,6 +18,7 @@
     <script>
         const canvas = document.querySelector("canvas");
         const ctx = canvas.getContext("2d");
+        let originImage ;
         const rectCoordinate = {
             x1 : null,
             y1 : null,
@@ -61,8 +63,12 @@
             var y = rect.y1 - getOffsetY();
             var w = rect.x2 - rect.x1;//width
             var h = rect.y2 - rect.y1;//height
-            ctx.clearRect(0,0,canvas.width,canvas.height);
             ctx.strokeRect(x, y, w, h);
+        }
+        function drawAll(rect){
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.drawImage(originImage, 0 , 0, canvas.width, canvas.height);
+            drawRect(rect);
         }
         function mouseMove(event){
             if(nowDrawing){
@@ -76,7 +82,7 @@
                     x2 : tempP.x,
                     y2 : tempP.y
                 };
-                drawRect(tempRect);
+                drawAll(tempRect);
             }else if(nowResizing){
                 let tempP = {
                     x : event.x,
@@ -88,7 +94,7 @@
                     x2 : tempP.x,
                     y2 : tempP.y
                 };
-                drawRect(tempRect);
+                drawAll(tempRect);
             }else if(nowMoving){
                 let tempP = {
                     x : event.x,
@@ -104,7 +110,7 @@
                     x2 : rectCoordinate.x2 - deltaP.x,
                     y2 : rectCoordinate.y2 - deltaP.y
                 };
-                drawRect(tempRect);
+                drawAll(tempRect);
             }
         }
         function mouseDown(event){
@@ -144,11 +150,15 @@
                 if(alreadyRect===false){
                     rectCoordinate.x2 = event.x;
                     rectCoordinate.y2 = event.y;
+                    ctx.clearRect(0,0,canvas.width,canvas.height);
+                    ctx.drawImage(originImage, 0 , 0, canvas.width, canvas.height);
                     drawRect(rectCoordinate);
                     alreadyRect = true;
                     if(rectCoordinate.x1 >= rectCoordinate.x2 || rectCoordinate.y1 >= rectCoordinate.y2){
                         window.alert("우측 상단에서 좌측 하단으로 그려주세요");
                         cancle();
+                        ctx.clearRect(0,0,canvas.width,canvas.height);
+                        ctx.drawImage(originImage, 0 , 0, canvas.width, canvas.height);
                         alreadyRect = false;
                     }
                     nowDrawing = false;
@@ -168,12 +178,12 @@
                         }
                         if(rectCoordinate.x1 >= tempX2.x || rectCoordinate.y1 >= tempX2.y){
                             window.alert("우측 상단에서 좌측 하단으로 그려주세요");
-                            drawRect(rectCoordinate);
+                            drawAll(rectCoordinate);
                             nowResizing = false;
                         }else{
                             rectCoordinate.x2 -= delta.x;
                             rectCoordinate.y2 -= delta.y;
-                            drawRect(rectCoordinate);  
+                            drawAll(rectCoordinate);  
                             nowResizing = false;
                         }
                     }else if(startP.action === "moving"){
@@ -189,7 +199,7 @@
                         rectCoordinate.y1 -= delta.y;
                         rectCoordinate.x2 -= delta.x;
                         rectCoordinate.y2 -= delta.y;
-                        drawRect(rectCoordinate);
+                        drawAll(rectCoordinate);
                         nowMoving = false;
                     }
                 }
@@ -206,7 +216,23 @@
             rectCoordinate.x2=null;
             rectCoordinate.y2=null;
             ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.drawImage(originImage, 0 , 0, canvas.width, canvas.height);
         }
+        function init(){
+            originImage = new Image();
+            originImage.src = '../../그림/image.png';
+            originImage.onload = function(){
+                canvas.width = originImage.width;
+                canvas.height = originImage.height;
+                ctx.drawImage(originImage, 0 , 0, canvas.width, canvas.height);
+            }
+        }
+        // function drawAll(rect) {
+        //     ctx.clearRect(0, 0, canvas.width, canvas.height);
+        //     ctx.drawImage(imageObj, 0, 0, canvas.width, canvas.height);
+        //     drawRect(rect)
+        // }
+        init();
         canvas.addEventListener("mousedown", mouseDown);
         canvas.addEventListener("mouseup", mouseUp);
         canvas.addEventListener("contextmenu", cancle);

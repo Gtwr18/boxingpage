@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <title>Let's box</title>
+  <meta charset="utf-8">
+</head>
+<body>
+  <form>
+    <label for="uname"><b>Username</b></label>
+    <input id ="username" type="text" placeholder="Enter Username" name="username" required>
+    <br/>
+
+    <label for="psw"><b>Password</b></label>
+    <input id ="psw" type="password" placeholder="Enter Password" name="psw" required>
+
+    <button id="submit">Login</botton>
+  </form>
+</body>
+<script>
+  $("#submit").click(function(){
+    $.ajax({
+      type : "POST",
+      url : "10.9.0.102:7989/api/login",
+      data : {username : $("#username").val()},
+      success : function(response){
+        window.location.href = "/boxingPage/boxingPage.html";
+      }
+    })
+  });
+</script>
+</html>
