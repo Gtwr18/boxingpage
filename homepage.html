@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- <meta id = "_crsf" name="crsf" th:content="${_csrf.token}"/>
+        <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/> -->
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <title>homepage</title>
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <div id="userInfo">
+            <p><span id="username"></span>  총작업량:<span id="boxing_total_worked_count"></span></p>
+            <button id="logout">logout</button>
+        </div>
+        <div class = "a" id="boxing">
+            <button id="boxingBtn">boxing</button>
+            <p>작업량 : <span id="boxing_worked_count"></span>/100</p>
+            <button id="boxingAssingBtn">할당받기</button>
+        </div>
+        <div class = "a" id="labeling">
+            <button id="labelingBtn">labeling</button>
+            <p>작업량 : <span id="labeling_worked_count"></span>/100</p>
+            <button id="labelingAssingBtn">할당받기</button>
+        </div>
+    </body>
+    <script>
+        // var token = $("meta[name='_csrf']").attr("content");
+        // var header = $("meta[name='_csrf_header']").attr("content");
+        // $(function() {
+        //     $(document).ajaxSend(function(e, xhr, options) {
+        //         xhr.setRequestHeader(header, token);
+        //     });
+        // });
+        $(window).on('load',function(){
+            $.ajax({
+                method : "GET",
+                url : "http://10.9.0.102:7989/home",
+                // success : function(data){
+                //     console.log(data);
+                //     $("#username").innerText = data.username;
+                // }
+            });
+        });
+    </script>
+    <style>
+        #userInfo{
+            text-align: right;
+        }
+        .a{
+            border-style :solid;
+            border-color: black;
+            border-width : thick;
+            margin : 5px;
+            padding : 5px;
+            width : 200px;
+        }
+    </style>
+</html>
