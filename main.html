@@ -5,28 +5,42 @@
   <title>Let's box</title>
   <meta charset="utf-8">
 </head>
-<body>
-  <form>
+<body> 
     <label for="uname"><b>Username</b></label>
     <input id ="username" type="text" placeholder="Enter Username" name="username" required>
     <br/>
 
-    <label for="psw"><b>Password</b></label>
-    <input id ="psw" type="password" placeholder="Enter Password" name="psw" required>
+    <!-- <label for="psw"><b>Password</b></label>
+    <input id ="psw" type="password" placeholder="Enter Password" name="psw" required> -->
 
     <button id="submit">Login</botton>
-  </form>
 </body>
 <script>
-  $("#submit").click(function(){
+  let submit = document.getElementById("submit");
+  submit.addEventListener("click", send);
+  let a ;
+  function send(){
+    // $.post("http://10.9.0.102:7989/api/login");
+    let name = document.getElementById("username").value;
+    console.log(name);
     $.ajax({
-      type : "POST",
-      url : "10.9.0.102:7989/api/login",
-      data : {username : $("#username").val()},
-      success : function(response){
-        window.location.href = "/boxingPage/boxingPage.html";
+      type : 'POST',
+      method : "GET",
+      url : `http://10.9.0.102:7989/api/login/?username=${name}`,
+      // data : {
+      //   username : name
+      // // },
+      // dataType : "application/json",
+      // contentType : "application/json",
+      success : function(data){
+        if(data === undefined){
+          window.alert("등록된 사용자가 아닙니다.");
+        }else{
+          window.location.href="./boxingPage.html";
+          console.log(data);
+        }
       }
     })
-  });
+  }
 </script>
 </html>
