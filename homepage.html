@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
     <head>
         <!-- <meta id = "_crsf" name="crsf" th:content="${_csrf.token}"/>
@@ -24,39 +23,33 @@
         </div>
     </body>
     <script>
-        function dataToLocalStorage(key,data){
-            window.localStorage.setItem(key,data);
+        let userdata={};
+        function setPage(data, key){
+            $(document).ready
         }
-        // var token = $("meta[name='_csrf']").attr("content");
-        // var header = $("meta[name='_csrf_header']").attr("content");
-        // $(function() {
-        //     $(document).ajaxSend(function(e, xhr, options) {
-        //         xhr.setRequestHeader(header, token);
-        //     });
-        // });
-        $("#boxingBtn").on('mouseup',function(){
+        $(document).ready(function(){
+            console.log("logged");
             $.ajax({
                 method : "GET",
-                url : "http://localhost:3000/api/boxing/3",
-                // dataType : "application/json; charset=utf-8",
-                success : function(res){
-                    for(key in res){
-                        console.log(res[key]);
-                        dataToLocalStorage(key,res[key]);
-                    }
-                    window.location.href="./boxingPage.html";
-                    
-                    // let a = JSON.parse(data);
-                    // console.log(a);
+                url : "http://10.9.0.102:7989/api/home",
+                headers: {"Authorization": 'token '+ window.localStorage.getItem('token')},
+                success : function(data){
+                    userdata = data;
+                    window.localStorage.setItem("boxing_image_id", userdata.boxing_image_id);
                 }
-            });
+
+            })
+        });
+        $("#boxingBtn").on('mouseup',function(){
+           window.location.href="/boxingpage";
         });
         $("#boxingAssignBtn").on('mouseup',function(){
             $.ajax({
                 method : "POST",
                 url : "http://10.9.0.102:7989/api/boxing/assign",
+                headers: {"Authorization": 'token '+ window.localStorage.getItem('token')},
                 success : function(data){
-                    
+                    window.location.href = "/homepage";
                 }
             });
         });
