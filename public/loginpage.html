@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+<head>
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <title>Let's box</title>
+  <meta charset="utf-8">
+</head>
+<body> 
+    <label for="uname"><b>Username</b></label>
+    <input id ="username" type="text" placeholder="Enter Username" name="username" required>
+    <br/>
+
+    <label for="psw"><b>Password</b></label>
+    <input id ="psw" type="password" placeholder="Enter Password" name="psw" required>
+
+    <button id="submit">Login</botton>
+    <button id = "register">sign up</button>
+</body>
+<script>
+  let submit = document.getElementById("submit");
+  submit.addEventListener("click", send);
+  function send(){
+    let name = document.getElementById("username").value;
+    let psw = document.getElementById("psw").value;
+    if(typeof psw === "number"){
+      psw = toString(psw);
+    }
+    console.log(psw);
+    $.ajax({
+      method : "POST",
+      url : "http://10.9.0.102:7989/api/auth/login",
+      data : {
+        username : name,
+        password : psw
+      },
+      // dataType : "application/json",
+      // contentType : "application/json",
+      success : function(res){
+        console.log(res.token);
+        if(res.token){
+          window.localStorage.setItem("token", res.token);
+          window.location.href = "/homepage";
+        }else{
+          console.log("no user");
+        }
+      }
+    })
+  }
+  function register(){
+    let name = document.getElementById("username").value;
+    let psw = document.getElementById("psw").value;
+    if(typeof psw === "number"){
+      psw = toString(psw);
+    }
+    console.log(psw);
+    $.ajax({
+      method : "POST",
+      url : "http://10.9.0.102:7989/api/auth/register",
+      data : {
+        username : name,
+        password : psw
+      },
+      // dataType : "application/json",
+      // contentType : "application/json",
+      success : function(res){
+        console.log(res.token);
+        if(res.token){
+          window.localStorage.setItem("token", res.token);
+          window.location.href = "/homepage";
+        }else{
+          console.log("no user");
+        }
+      }
+    })
+  }
+  $("#register").on("click",register);
+</script>
+</html>
