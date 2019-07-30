@@ -15,7 +15,6 @@
             <p>이동</p>
             <button id = "goLUnboxed">←</button><button id = "goRUnboxed">→</button>
             <p>box안한거</p>
-            <button id = "deleteBtn">삭제</button>
         </div>
         <!-- <div id = "user">
             <p id="usernameSpace"><span id="username"></span></p>
@@ -94,40 +93,77 @@
         }
         function onSubmit(){//for pressing Enter
             let ltrb = getLTRB(rectCoordinate);
-            $.ajax({
-                method : "POST",
-                url : `http://10.9.0.102:7989/api/box/${userdata.id}`,
-                data : {
-                    left : ltrb[0],
-                    top : ltrb[1],
-                    right : ltrb[2],
-                    bottom : ltrb[3]
-                },
-                headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
-                // contentType : "application/json",
-                // dataType : "application/json",
-                success : function(){
-                    if(userdata.next_id === null){
-                        window.alert("끝남!");
-                    }else{
-                        $.ajax({
-                            method : "GET",
-                            url : `http://10.9.0.102:7989/api/boxing/${userdata.next_id}`,
-                            headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
-                            success : function(data){
-                                userdata = data;
-                                if(userdata.box_info===null){
-                                    newImage();
-                                }else{
-                                    newImage();
-                                    let tempR = ltrbToRec(userdata.box_info,originImage);
-                                    drawRect(tempR);
+            if(userdata.box_info ===null){
+                $.ajax({
+                    method : "POST",
+                    url : `http://10.9.0.102:7989/api/box/${userdata.id}`,
+                    data : {
+                        left : ltrb[0],
+                        top : ltrb[1],
+                        right : ltrb[2],
+                        bottom : ltrb[3]
+                    },
+                    headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
+                    // contentType : "application/json",
+                    // dataType : "application/json",
+                    success : function(){
+                        if(userdata.next_id === null){
+                            window.alert("끝남!");
+                        }else{
+                            $.ajax({
+                                method : "GET",
+                                url : `http://10.9.0.102:7989/api/boxing/${userdata.next_id}`,
+                                headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
+                                success : function(data){
+                                    userdata = data;
+                                    if(userdata.box_info===null){
+                                        newImage();
+                                    }else{
+                                        newImage();
+                                        let tempR = ltrbToRec(userdata.box_info,originImage);
+                                        drawRect(tempR);
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
                     }
-                }
-            });
+                });
+            }else{
+                $.ajax({
+                    method : "PUT",
+                    url : `http://10.9.0.102:7989/api/box/${userdata.id}`,
+                    data : {
+                        left : ltrb[0],
+                        top : ltrb[1],
+                        right : ltrb[2],
+                        bottom : ltrb[3]
+                    },
+                    headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
+                    // contentType : "application/json",
+                    // dataType : "application/json",
+                    success : function(){
+                        if(userdata.next_id === null){
+                            window.alert("끝남!");
+                        }else{
+                            $.ajax({
+                                method : "GET",
+                                url : `http://10.9.0.102:7989/api/boxing/${userdata.next_id}`,
+                                headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
+                                success : function(data){
+                                    userdata = data;
+                                    if(userdata.box_info===null){
+                                        newImage();
+                                    }else{
+                                        newImage();
+                                        let tempR = ltrbToRec(userdata.box_info,originImage);
+                                        drawRect(tempR);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
         }
         $("#submit").on("click", onSubmit);
 
@@ -217,7 +253,6 @@
                 }
             })
         }
-        $("#deleteBtn").on("click",deleteImg);
         //엔터 오른쪽 왼쪽 키누름 구현
         $(document).on("keyup",function(event){
             if(event.which === 13){
@@ -230,6 +265,8 @@
                 nextValidImg();
             }else if(event.which === 38){
                 prevValidImg();
+            }else if(event.which === 46){
+                deleteImg();
             }
         })
         //canvas 작업 구현
@@ -438,22 +475,68 @@
         }
         function newImage(){
             originImage = new Image();
-            originImage.src = userdata.image_url;
-            originImage.onload = function(){
-                ctx.clearRect(0,0,canvas.width,canvas.height);
-                canvas.width = originImage.width;
-                canvas.height = originImage.height;
-                ctx.drawImage(originImage, 0 , 0, canvas.width, canvas.height);
-                if(userdata.box_info === null){
-                }else{
-                    let tempR = ltrbToRec(userdata.box_info,originImage);
-                    for(key in tempR){
-                        rectCoordinate[key] = tempR[key];
+            let testImage = new Image();
+            testImage.onload = function(){
+                originImage.src = userdata.image_url;
+                originImage.onload = function(){
+                    ctx.clearRect(0,0,canvas.width,canvas.height);
+                    canvas.width = originImage.width;
+                    canvas.height = originImage.height;
+                    ctx.drawImage(originImage, 0 , 0, canvas.width, canvas.height);
+                    if(userdata.box_info === null){
+                        for(key in rectCoordinate){
+                            rectCoordinate[key]=null;
+                        }
+                    }else{
+                        let tempR = ltrbToRec(userdata.box_info,originImage);
+                        for(key in tempR){
+                            rectCoordinate[key] = tempR[key];
+                        }
+                        drawRect(rectCoordinate);
+                        alreadyRect = true;
                     }
-                    drawRect(rectCoordinate);
-                    alreadyRect = true;
+                }
+            };
+            testImage.onerror = function(){
+                originImage.src = './images.png';
+                originImage.onload = function(){
+                    ctx.clearRect(0,0,canvas.width,canvas.height);
+                    canvas.width = originImage.width;
+                    canvas.height = originImage.height;
+                    ctx.drawImage(originImage, 0 , 0, canvas.width, canvas.height);
+                    if(userdata.box_info === null){
+                        for(key in rectCoordinate){
+                            rectCoordinate[key]=null;
+                        }
+                    }else{
+                        let tempR = ltrbToRec(userdata.box_info,originImage);
+                        for(key in tempR){
+                            rectCoordinate[key] = tempR[key];
+                        }
+                        drawRect(rectCoordinate);
+                        alreadyRect = true;
+                    }
                 }
             }
+            testImage.src = userdata.image_url;
+            // originImage.onload = function(){
+            //     ctx.clearRect(0,0,canvas.width,canvas.height);
+            //     canvas.width = originImage.width;
+            //     canvas.height = originImage.height;
+            //     ctx.drawImage(originImage, 0 , 0, canvas.width, canvas.height);
+            //     if(userdata.box_info === null){
+            //         for(key in rectCoordinate){
+            //             rectCoordinate[key]=null;
+            //         }
+            //     }else{
+            //         let tempR = ltrbToRec(userdata.box_info,originImage);
+            //         for(key in tempR){
+            //             rectCoordinate[key] = tempR[key];
+            //         }
+            //         drawRect(rectCoordinate);
+            //         alreadyRect = true;
+            //     }
+            // }
         }
         // function drawAll(rect) {
         //     ctx.clearRect(0, 0, canvas.width, canvas.height);

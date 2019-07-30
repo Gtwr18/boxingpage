@@ -24,9 +24,10 @@
     </body>
     <script>
         let userdata={};
-        function setPage(data, key){
-            $(document).ready
-        }
+        //세팅페이지
+        // function setPage(data, key){
+        //     $(document).ready
+        // }
         $(document).ready(function(){
             console.log("logged");
             $.ajax({
@@ -36,6 +37,7 @@
                 success : function(data){
                     userdata = data;
                     window.localStorage.setItem("boxing_image_id", userdata.boxing_image_id);
+                    window.localStorage.setItem("labeling_image_id", userdata.labeling_image_id);
                 }
 
             })
@@ -47,6 +49,20 @@
             $.ajax({
                 method : "POST",
                 url : "http://10.9.0.102:7989/api/boxing/assign",
+                headers: {"Authorization": 'token '+ window.localStorage.getItem('token')},
+                success : function(data){
+                    window.location.href = "/homepage";
+                }
+            });
+        });
+        $("#labelingBtn").on("mouseup", function(){
+            console.log("!");
+            window.location.href="/labelingpage";
+        })
+        $("#labelingAssignBtn").on('mouseup',function(){
+            $.ajax({
+                method : "POST",
+                url : "http://10.9.0.102:7989/api/labeling/assign",
                 headers: {"Authorization": 'token '+ window.localStorage.getItem('token')},
                 success : function(data){
                     window.location.href = "/homepage";

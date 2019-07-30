@@ -20,3 +20,6 @@ app.get('/homepage',(req,res)=>{
 app.get('/boxingpage',function(req,res){
   res.sendFile(__dirname + "/public/boxingpage.html");
 });
+app.get('/labelingpage',function(req,res){
+  res.sendFile(__dirname + "/public/labelingpage.html");
+});
