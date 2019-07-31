@@ -99,7 +99,7 @@
             let id = window.localStorage.getItem("labeling_image_id");
             $.ajax({
                 method : "GET",
-                url : `http://10.9.0.102:7989/api/labeling/${id}`,
+                url : `http://15.164.210.21:7989/api/labeling/${id}`,
                 headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                 success : function(data){
                     userdata = data;
@@ -198,13 +198,13 @@
                 if(userdata.label_info === null){
                     $.ajax({
                         method : "POST",
-                        url : `http://10.9.0.102:7989/api/label/${userdata.id}`,
+                        url : `http://15.164.210.21:7989/api/label/${userdata.id}`,
                         headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                         data : submitData,
                         success : function(res){
                             $.ajax({
                                 mothod : "GET",
-                                url : `http://10.9.0.102:7989/api/labeling/${userdata.next_id}`,
+                                url : `http://15.164.210.21:7989/api/labeling/${userdata.next_id}`,
                                 headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                                 success : function(data){
                                     userdata = data;
@@ -217,13 +217,13 @@
                 }else{
                     $.ajax({
                         method : "PUT",
-                        url : `http://10.9.0.102:7989/api/label/${userdata.id}`,
+                        url : `http://15.164.210.21:7989/api/label/${userdata.id}`,
                         headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                         data : submitData,
                         success : function(res){
                             $.ajax({
                                 mothod : "GET",
-                                url : `http://10.9.0.102:7989/api/labeling/${userdata.next_id}`,
+                                url : `http://15.164.210.21:7989/api/labeling/${userdata.next_id}`,
                                 headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                                 success : function(data){
                                     userdata = data;
@@ -243,7 +243,7 @@
             if(userdata.prev_id !== null){
                 $.ajax({
                     method : "GET",
-                    url : `http://10.9.0.102:7989/api/labeling/${userdata.prev_id}`,
+                    url : `http://15.164.210.21:7989/api/labeling/${userdata.prev_id}`,
                     headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                     success : function(data){
                         userdata = data;
@@ -259,7 +259,7 @@
             if(userdata.next_id !== null){
                 $.ajax({
                     method : "GET",
-                    url : `http://10.9.0.102:7989/api/labeling/${userdata.next_id}`,
+                    url : `http://15.164.210.21:7989/api/labeling/${userdata.next_id}`,
                     headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                     success : function(data){
                         userdata = data;

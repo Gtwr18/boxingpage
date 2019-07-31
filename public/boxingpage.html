@@ -20,6 +20,7 @@
             </br>Enter : 작업완료, 수정 후 제출하기
             </br>Delete : 이미지가 없는 사진 삭제하기 
             </p>
+            <p id="imageId"></p>
         </div>
         <!-- <div id = "user">
             <p id="usernameSpace"><span id="username"></span></p>
@@ -63,7 +64,7 @@
             let imageId = window.localStorage.getItem("boxing_image_id");
             $.ajax({
                 method : "GET",
-                url : `http://10.9.0.102:7989/api/boxing/${imageId}`,
+                url : `http://15.164.210.21:7989/api/boxing/${imageId}`,
                 headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                 success : function(data){
                     userdata = data;
@@ -101,7 +102,7 @@
             if(userdata.box_info ===null){
                 $.ajax({
                     method : "POST",
-                    url : `http://10.9.0.102:7989/api/box/${userdata.id}`,
+                    url : `http://15.164.210.21:7989/api/box/${userdata.id}`,
                     data : {
                         left : ltrb[0],
                         top : ltrb[1],
@@ -117,7 +118,7 @@
                         }else{
                             $.ajax({
                                 method : "GET",
-                                url : `http://10.9.0.102:7989/api/boxing/${userdata.next_id}`,
+                                url : `http://15.164.210.21:7989/api/boxing/${userdata.next_id}`,
                                 headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                                 success : function(data){
                                     userdata = data;
@@ -136,7 +137,7 @@
             }else{
                 $.ajax({
                     method : "PUT",
-                    url : `http://10.9.0.102:7989/api/box/${userdata.id}`,
+                    url : `http://15.164.210.21:7989/api/box/${userdata.id}`,
                     data : {
                         left : ltrb[0],
                         top : ltrb[1],
@@ -152,7 +153,7 @@
                         }else{
                             $.ajax({
                                 method : "GET",
-                                url : `http://10.9.0.102:7989/api/boxing/${userdata.next_id}`,
+                                url : `http://15.164.210.21:7989/api/boxing/${userdata.next_id}`,
                                 headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                                 success : function(data){
                                     userdata = data;
@@ -177,7 +178,7 @@
             if(userdata.prev_id !== null){
                 $.ajax({
                     method : "GET",
-                    url : `http://10.9.0.102:7989/api/boxing/${userdata.prev_id}`,
+                    url : `http://15.164.210.21:7989/api/boxing/${userdata.prev_id}`,
                     headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                     success : function(data){
                         userdata = data;
@@ -195,7 +196,7 @@
             if(userdata.next_id !== null){
                 $.ajax({
                     method : "GET",
-                    url : `http://10.9.0.102:7989/api/boxing/${userdata.next_id}`,
+                    url : `http://15.164.210.21:7989/api/boxing/${userdata.next_id}`,
                     headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                     success : function(data){
                         userdata = data;
@@ -213,7 +214,7 @@
             if(userdata.valid_next_id !== null){
                 $.ajax({
                     method : "GET",
-                    url : `http://10.9.0.102:7989/api/boxing/${userdata.valid_next_id}`,
+                    url : `http://15.164.210.21:7989/api/boxing/${userdata.valid_next_id}`,
                     headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                     success : function(data){
                         userdata = data;
@@ -230,7 +231,7 @@
             if(userdata.valid_prev_id !== null){
                 $.ajax({
                     method : "GET",
-                    url : `http://10.9.0.102:7989/api/boxing/${userdata.valid_prev_id}`,
+                    url : `http://15.164.210.21:7989/api/boxing/${userdata.valid_prev_id}`,
                     headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                     success : function(data){
                         userdata = data;
@@ -247,7 +248,7 @@
         function deleteImg(){
             $.ajax({
                 method : "POST",
-                url : `http://10.9.0.102:7989/api/image/delete/${userdata.id}`,
+                url : `http://15.164.210.21:7989/api/image/delete/${userdata.id}`,
                 headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                 success : function(){
                     if(userdata.next_id === null){
@@ -488,9 +489,11 @@
                     canvas.width = originImage.width;
                     canvas.height = originImage.height;
                     ctx.drawImage(originImage, 0 , 0, canvas.width, canvas.height);
+                    $("#imageId").text(`${userdata.id}`);
                     if(userdata.box_info === null){
                         for(key in rectCoordinate){
                             rectCoordinate[key]=null;
+                            alreadyRect = false;
                         }
                     }else{
                         let tempR = ltrbToRec(userdata.box_info,originImage);
@@ -509,6 +512,7 @@
                     canvas.width = originImage.width;
                     canvas.height = originImage.height;
                     ctx.drawImage(originImage, 0 , 0, canvas.width, canvas.height);
+                    $("#imageId").text(`${userdata.id}`);
                     if(userdata.box_info === null){
                         for(key in rectCoordinate){
                             rectCoordinate[key]=null;
@@ -524,30 +528,7 @@
                 }
             }
             testImage.src = userdata.image_url;
-            // originImage.onload = function(){
-            //     ctx.clearRect(0,0,canvas.width,canvas.height);
-            //     canvas.width = originImage.width;
-            //     canvas.height = originImage.height;
-            //     ctx.drawImage(originImage, 0 , 0, canvas.width, canvas.height);
-            //     if(userdata.box_info === null){
-            //         for(key in rectCoordinate){
-            //             rectCoordinate[key]=null;
-            //         }
-            //     }else{
-            //         let tempR = ltrbToRec(userdata.box_info,originImage);
-            //         for(key in tempR){
-            //             rectCoordinate[key] = tempR[key];
-            //         }
-            //         drawRect(rectCoordinate);
-            //         alreadyRect = true;
-            //     }
-            // }
         }
-        // function drawAll(rect) {
-        //     ctx.clearRect(0, 0, canvas.width, canvas.height);
-        //     ctx.drawImage(imageObj, 0, 0, canvas.width, canvas.height);
-        //     drawRect(rect)
-        // }
         canvas.addEventListener("mousedown", mouseDown);
         canvas.addEventListener("mouseup", mouseUp);
         canvas.addEventListener("contextmenu", cancle);
