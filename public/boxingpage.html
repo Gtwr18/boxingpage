@@ -480,6 +480,7 @@
             ctx.drawImage(originImage, 0 , 0, canvas.width, canvas.height);
         }
         function newImage(){
+            window.localStorage.setItem("boxing_image_id", userdata.id);
             originImage = new Image();
             let testImage = new Image();
             testImage.onload = function(){

@@ -22,7 +22,7 @@
                 <li class="shape invisible" value = "11">11. 호보</li>
                 <li class="shape invisible" value = "12">12. 핑고</li>
                 <li class="shape invisible" value = "13">13. 버켓</li>
-                <li class="shape invisible" value = "14">14. 모루게쒀요</li>
+                <li class="shape invisible" value = "0">14. 모루게쒀요</li>
             </ul>
             <ul class = "unopened"><p class = "strap button">스트랩모양</p>
                 <li class="strap invisible" value = "1">1. 토트</li>
@@ -30,7 +30,7 @@
                 <li class="strap invisible" value = "3">3. 손목</li>
                 <li class="strap invisible" value = "4">4. 크로스</li>
                 <li class="strap invisible" value = "5">5. 끈이없음</li>
-                <li class="strap invisible" value = "6">6. 모루게쑤어ㅠ</li>
+                <li class="strap invisible" value = "0">6. 모루게쑤어ㅠ</li>
             </ul>
             <ul class = "unopened"><p class = "opening_type button">여는 방법</p>
                 <li class="opening_type invisible" value = "1">1. 커버</li>
@@ -38,7 +38,7 @@
                 <li class="opening_type invisible" value = "3">3. 프레임</li>
                 <li class="opening_type invisible" value = "4">4. 자물쇠</li>
                 <li class="opening_type invisible" value = "5">5. 없음</li>
-                <li class="opening_type invisible" value = "6">6. 모르게쒀</li>
+                <li class="opening_type invisible" value = "0">6. 모르게쒀</li>
             </ul>
             <ul class = "unopened"><p class = "material button">재질</p>
                 <li class="material invisible" value = "1">1. 가죽</li>
@@ -47,7 +47,7 @@
                 <li class="material invisible" value = "4">4. 섬유질</li>
                 <li class="material invisible" value = "5">5. 플라스틱</li>
                 <li class="material invisible" value = "6">6. 털</li>
-                <li class="material invisible" value = "7">7. 몰라용</li>
+                <li class="material invisible" value = "0">7. 몰라용</li>
             </ul>
             <ul class = "unopened"><p class = "color button">색깔</p>
                 <li class="color invisible" value = "1">1. Red</li>
@@ -64,7 +64,7 @@
                 <li class="color invisible" value = "12">12. Black</li>
                 <li class="color invisible" value = "13">13. Grey</li>
                 <li class="color invisible" value = "14">14. 형광색</li>
-                <li class="color invisible" value = "15">15. 투명</li>
+                <li class="color invisible" value = "0">15. 투명</li>
             </ul>
             <ul class = "unopened"><p class = "pattern button">패턴</p>
                 <li class="pattern invisible" value = "1">1. 가죽패턴</li>
@@ -77,7 +77,8 @@
                 <li class="pattern invisible" value = "8">8. 글씨패턴</li>
                 <li class="pattern invisible" value = "9">9. 펀칭(구멍)</li>
                 <li class="pattern invisible" value = "10">10. 꽃무늬</li>
-                <li class="pattern invisible" value = "11">11. 기타</li>
+                <li class="pattern invisible" value = "0">11. 기타</li>
+                <li class="pattern invisible" value = "99">12. nothing</li>
             </ul>
         </div>
         <div id = "tags">
@@ -117,14 +118,7 @@
         })
 
         //change color when selected
-        let submitData = {
-            "shape":14,
-            "strap":6,
-            "opening_type":6,
-            "material":7,
-            "color":null,
-            "pattern":11
-        };
+        let submitData ={};
         $("li").on("click",function(event){
             let father = event.target.parentElement;
             for(i=1;i<father.children.length;i++){
@@ -178,7 +172,9 @@
                 $(`li`).removeClass("checked");
                 if(userdata.label_info === null){
                     deleteTag();
+
                 }else{
+                    submitData = userdata.label_info;
                     for(key in userdata.label_info){
                         $(`li.${key}[value='${userdata.label_info[key]}']`).addClass("checked");
                         $(`p#${key}`).text($(`li.${key}[value='${userdata.label_info[key]}']`).text());
