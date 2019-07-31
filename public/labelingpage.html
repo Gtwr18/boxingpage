@@ -6,7 +6,8 @@
     </head>
     <body>
         <div><h1>라벨머쉰</h1></div>
-        <div>
+        <div id = "selector">
+            <p id = "slt">SELECT</p>
             <ul class = "unopened"><p class = "shape button">모양</p>
                 <li class="shape invisible" value = "1">1. 가로로 긴 직사각형</li>
                 <li class="shape invisible" value = "2">2. 정사각형</li>
@@ -87,7 +88,7 @@
             <p id = 'color'></p>
             <p id = 'pattern'></p>
         </div>
-        <div class = "wrapper">
+        <div id = "wrapper">
             <canvas class="canvas"></canvas>
         </div>
     </body>
@@ -207,6 +208,7 @@
                                 headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                                 success : function(data){
                                     userdata = data;
+                                    window.localStorage.setItem("labeling_image_id", userdata.valid_next_id);
                                     newImage();
                                 }
                             })
@@ -225,6 +227,7 @@
                                 headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                                 success : function(data){
                                     userdata = data;
+                                    window.localStorage.setItem("labeling_image_id", userdata.valid_next_id);
                                     newImage();
                                 }
                             })
@@ -244,6 +247,7 @@
                     headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                     success : function(data){
                         userdata = data;
+                        window.localStorage.setItem("labeling_image_id", userdata.valid_next_id);
                         newImage();
                     }
                 });
@@ -259,6 +263,7 @@
                     headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                     success : function(data){
                         userdata = data;
+                        window.localStorage.setItem("labeling_image_id", userdata.valid_next_id);
                         newImage();
                     }
                 });
@@ -275,6 +280,10 @@
                 nextImg();
             }
         })
+        $("canvas").on("click",function(){
+            window.localStorage.setItem("boxing_image_id",userdata.origin_id);
+            window.location.href = "/boxingpage";
+        })
     </script>
     <style>
         .invisible{
@@ -282,6 +291,27 @@
         }
         .checked{
             color : red;
+        }
+        #selector{
+            position: absolute;
+            left : 800px;
+            top: 100px;
+            border:2px solid black;
+            border-radius: 20px;
+        }
+        #tags{
+            position: absolute;
+            left:50px;
+            top: 50px;
+        }
+        #wrapper{
+            position: absolute;
+            left:50px;
+            top : 300px;
+        }
+        #slt{
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            font-size : 40px;
         }
     </style>
 </head>
