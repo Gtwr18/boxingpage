@@ -153,7 +153,7 @@
         }
         //image 띄우기
         const canvas = document.querySelector("canvas");
-        canvas.height = 500;
+        canvas.width = 500;
         const ctx = canvas.getContext("2d");
         let originImage;
         function deleteTag(){
@@ -166,8 +166,8 @@
             originImage.src = userdata.image_url;
             originImage.onload = function(){
                 ctx.clearRect(0,0,canvas.width,canvas.height);
-                canvas.width = canvas.height * (originImage.width / originImage.height);
-                originImage.height = canvas.height;
+                canvas.height = canvas.width * (originImage.height / originImage.width);
+                originImage.width = canvas.width;
                 ctx.drawImage(originImage, 0 , 0, canvas.width, canvas.height);
                 $(`li`).removeClass("checked");
                 if(userdata.label_info === null){
