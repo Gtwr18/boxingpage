@@ -37,7 +37,7 @@
             console.log("logged");
             $.ajax({
                 method : "GET",
-                url : "http://15.164.210.21:7989/api/home",
+                url : "http://15.164.215.85:7989/api/home",
                 headers: {"Authorization": 'token '+ window.localStorage.getItem('token')},
                 success : function(data){
                     userdata = data;
@@ -59,7 +59,7 @@
         $("#boxingAssignBtn").on('mouseup',function(){
             $.ajax({
                 method : "POST",
-                url : "http://15.164.210.21:7989/api/boxing/assign",
+                url : "http://15.164.215.85:7989/api/boxing/assign",
                 headers: {"Authorization": 'token '+ window.localStorage.getItem('token')},
                 success : function(data){
                     window.location.href = "/homepage";
@@ -73,7 +73,7 @@
         $("#labelingAssignBtn").on('mouseup',function(){
             $.ajax({
                 method : "POST",
-                url : "http://15.164.210.21:7989/api/labeling/assign",
+                url : "http://15.164.215.85:7989/api/labeling/assign",
                 headers: {"Authorization": 'token '+ window.localStorage.getItem('token')},
                 success : function(data){
                     window.location.href = "/homepage";

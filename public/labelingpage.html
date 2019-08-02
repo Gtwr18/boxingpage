@@ -42,9 +42,9 @@
             </ul>
             <ul class = "unopened"><p class = "material button">재질</p>
                 <li class="material invisible" value = "1">1. 가죽</li>
-                <li class="material invisible" value = "2">2. 면</li>
+                <li class="material invisible" value = "2">2. 면(스웨이드포함)</li>
                 <li class="material invisible" value = "3">3. 캔버스</li>
-                <li class="material invisible" value = "4">4. 섬유질</li>
+                <li class="material invisible" value = "4">4. 섬유질(나무, 마, 왕골)</li>
                 <li class="material invisible" value = "5">5. 플라스틱</li>
                 <li class="material invisible" value = "6">6. 털</li>
                 <li class="material invisible" value = "0">7. 몰라용</li>
@@ -73,11 +73,11 @@
                 <li class="pattern invisible" value = "4">4. 도트무늬</li>
                 <li class="pattern invisible" value = "5">5. 체크무늬</li>
                 <li class="pattern invisible" value = "6">6. 퀼트무늬</li>
-                <li class="pattern invisible" value = "7">7. 심볼패턴</li>
+                <li class="pattern invisible" value = "7">7. 심볼(로고한개)</li>
                 <li class="pattern invisible" value = "8">8. 글씨패턴</li>
                 <li class="pattern invisible" value = "9">9. 펀칭(구멍)</li>
                 <li class="pattern invisible" value = "10">10. 꽃무늬</li>
-                <li class="pattern invisible" value = "0">11. 기타</li>
+                <li class="pattern invisible" value = "0">11. 기타(스트라이프 등)</li>
                 <li class="pattern invisible" value = "99">12. nothing</li>
             </ul>
         </div>
@@ -100,7 +100,7 @@
             let id = window.localStorage.getItem("labeling_image_id");
             $.ajax({
                 method : "GET",
-                url : `http://15.164.210.21:7989/api/labeling/${id}`,
+                url : `http://15.164.215.85:7989/api/labeling/${id}`,
                 headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                 success : function(data){
                     userdata = data;
@@ -194,13 +194,13 @@
                 if(userdata.label_info === null){
                     $.ajax({
                         method : "POST",
-                        url : `http://15.164.210.21:7989/api/label/${userdata.id}`,
+                        url : `http://15.164.215.85:7989/api/label/${userdata.id}`,
                         headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                         data : submitData,
                         success : function(res){
                             $.ajax({
                                 mothod : "GET",
-                                url : `http://15.164.210.21:7989/api/labeling/${userdata.next_id}`,
+                                url : `http://15.164.215.85:7989/api/labeling/${userdata.next_id}`,
                                 headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                                 success : function(data){
                                     userdata = data;
@@ -213,13 +213,13 @@
                 }else{
                     $.ajax({
                         method : "PUT",
-                        url : `http://15.164.210.21:7989/api/label/${userdata.id}`,
+                        url : `http://15.164.215.85:7989/api/label/${userdata.id}`,
                         headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                         data : submitData,
                         success : function(res){
                             $.ajax({
                                 mothod : "GET",
-                                url : `http://15.164.210.21:7989/api/labeling/${userdata.next_id}`,
+                                url : `http://15.164.215.85:7989/api/labeling/${userdata.next_id}`,
                                 headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                                 success : function(data){
                                     userdata = data;
@@ -239,7 +239,7 @@
             if(userdata.prev_id !== null){
                 $.ajax({
                     method : "GET",
-                    url : `http://15.164.210.21:7989/api/labeling/${userdata.prev_id}`,
+                    url : `http://15.164.215.85:7989/api/labeling/${userdata.prev_id}`,
                     headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                     success : function(data){
                         userdata = data;
@@ -255,7 +255,7 @@
             if(userdata.next_id !== null){
                 $.ajax({
                     method : "GET",
-                    url : `http://15.164.210.21:7989/api/labeling/${userdata.next_id}`,
+                    url : `http://15.164.215.85:7989/api/labeling/${userdata.next_id}`,
                     headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                     success : function(data){
                         userdata = data;
@@ -267,6 +267,55 @@
                 window.alert("끝임!");
             }
         }
+        function nextValidImg(){
+            if(userdata.valid_next_id !== null){
+                $.ajax({
+                    method : "GET",
+                    url : `http://15.164.215.85:7989/api/labeling/${userdata.valid_next_id}`,
+                    headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
+                    success : function(data){
+                        userdata = data;
+                        newImage();
+                    }
+                });
+            }else{
+                window.alert("끝임!");
+            }
+        }
+        $("#goRUnboxed").on("click", nextValidImg);
+
+        function prevValidImg(){
+            if(userdata.valid_prev_id !== null){
+                $.ajax({
+                    method : "GET",
+                    url : `http://15.164.215.85:7989/api/labeling/${userdata.valid_prev_id}`,
+                    headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
+                    success : function(data){
+                        userdata = data;
+                        newImage();
+                    }
+                });
+            }else{
+                window.alert("끝임!");
+            }
+        }
+        $("#goLUnboxed").on("click", prevValidImg);
+
+        //삭제기능구현
+        function deleteImg(){
+            $.ajax({
+                method : "POST",
+                url : `http://15.164.215.85:7989/api/cropimage/delete/${userdata.id}`,
+                headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
+                success : function(){
+                    if(userdata.next_id === null){
+                        prevImg();
+                    }else{
+                        nextImg();
+                    }
+                }
+            })
+        }
         $(document).on("keyup", function(){
             if(event.which === 13){
                 onSubmit();
@@ -274,6 +323,12 @@
                 prevImg();
             }else if(event.which === 39){
                 nextImg();
+            }else if(event.which === 40){
+                nextValidImg();
+            }else if(event.which === 38){
+                prevValidImg();
+            }else if(event.which === 46){
+                deleteImg();
             }
         })
         $("canvas").on("click",function(){

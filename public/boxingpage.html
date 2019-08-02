@@ -64,7 +64,7 @@
             let imageId = window.localStorage.getItem("boxing_image_id");
             $.ajax({
                 method : "GET",
-                url : `http://15.164.210.21:7989/api/boxing/${imageId}`,
+                url : `http://15.164.215.85:7989/api/boxing/${imageId}`,
                 headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                 success : function(data){
                     userdata = data;
@@ -102,7 +102,7 @@
             if(userdata.box_info ===null){
                 $.ajax({
                     method : "POST",
-                    url : `http://15.164.210.21:7989/api/box/${userdata.id}`,
+                    url : `http://15.164.215.85:7989/api/box/${userdata.id}`,
                     data : {
                         left : ltrb[0],
                         top : ltrb[1],
@@ -118,7 +118,7 @@
                         }else{
                             $.ajax({
                                 method : "GET",
-                                url : `http://15.164.210.21:7989/api/boxing/${userdata.next_id}`,
+                                url : `http://15.164.215.85:7989/api/boxing/${userdata.next_id}`,
                                 headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                                 success : function(data){
                                     userdata = data;
@@ -137,7 +137,7 @@
             }else{
                 $.ajax({
                     method : "PUT",
-                    url : `http://15.164.210.21:7989/api/box/${userdata.id}`,
+                    url : `http://15.164.215.85:7989/api/box/${userdata.id}`,
                     data : {
                         left : ltrb[0],
                         top : ltrb[1],
@@ -153,7 +153,7 @@
                         }else{
                             $.ajax({
                                 method : "GET",
-                                url : `http://15.164.210.21:7989/api/boxing/${userdata.next_id}`,
+                                url : `http://15.164.215.85:7989/api/boxing/${userdata.next_id}`,
                                 headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                                 success : function(data){
                                     userdata = data;
@@ -178,7 +178,7 @@
             if(userdata.prev_id !== null){
                 $.ajax({
                     method : "GET",
-                    url : `http://15.164.210.21:7989/api/boxing/${userdata.prev_id}`,
+                    url : `http://15.164.215.85:7989/api/boxing/${userdata.prev_id}`,
                     headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                     success : function(data){
                         userdata = data;
@@ -196,7 +196,7 @@
             if(userdata.next_id !== null){
                 $.ajax({
                     method : "GET",
-                    url : `http://15.164.210.21:7989/api/boxing/${userdata.next_id}`,
+                    url : `http://15.164.215.85:7989/api/boxing/${userdata.next_id}`,
                     headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                     success : function(data){
                         userdata = data;
@@ -214,7 +214,7 @@
             if(userdata.valid_next_id !== null){
                 $.ajax({
                     method : "GET",
-                    url : `http://15.164.210.21:7989/api/boxing/${userdata.valid_next_id}`,
+                    url : `http://15.164.215.85:7989/api/boxing/${userdata.valid_next_id}`,
                     headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                     success : function(data){
                         userdata = data;
@@ -231,7 +231,7 @@
             if(userdata.valid_prev_id !== null){
                 $.ajax({
                     method : "GET",
-                    url : `http://15.164.210.21:7989/api/boxing/${userdata.valid_prev_id}`,
+                    url : `http://15.164.215.85:7989/api/boxing/${userdata.valid_prev_id}`,
                     headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                     success : function(data){
                         userdata = data;
@@ -248,7 +248,7 @@
         function deleteImg(){
             $.ajax({
                 method : "POST",
-                url : `http://15.164.210.21:7989/api/image/delete/${userdata.id}`,
+                url : `http://15.164.215.85:7989/api/image/delete/${userdata.id}`,
                 headers : {"Authorization":'token '+ window.localStorage.getItem('token')},
                 success : function(){
                     if(userdata.next_id === null){
