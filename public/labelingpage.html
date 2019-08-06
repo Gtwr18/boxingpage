@@ -188,7 +188,9 @@
                 $(`li`).removeClass("checked");
                 if(userdata.label_info === null){
                     deleteTag();
-
+                    for(key in submitData){
+                        submitData[key] = null;
+                    }
                 }else{
                     submitData = userdata.label_info;
                     for(key in userdata.label_info){
