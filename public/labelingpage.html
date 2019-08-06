@@ -131,6 +131,10 @@
 
         //change color when selected
         let submitData ={};
+        let categories = $("p.button");
+        for(i=0;i<categories.length;i++){
+            submitData[categories[i].classList[0]] = null;
+        }
         $("li").on("click",function(event){
             let father = event.target.parentElement;
             for(i=1;i<father.children.length;i++){
